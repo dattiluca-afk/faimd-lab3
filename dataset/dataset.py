@@ -46,7 +46,7 @@ def prepare_data():
         shutil.rmtree(val_images_dir)
         print("Data preparation complete!")
 
-def get_dataloaders(batch_size=32, num_workers=0):
+def get_dataloaders(batch_size=32, num_workers=4):
     train_transform = T.Compose([
         T.RandomHorizontalFlip(),
         T.RandomRotation(15),
