@@ -7,24 +7,26 @@ import torchvision.transforms as T
 from torch.utils.data import DataLoader
 
 def prepare_data():
-    """Downloads and reformats Tiny-ImageNet using native Python (Windows friendly)."""
+    """Downloads and reformats Tiny-ImageNet using native Python."""
     url = "http://cs231n.stanford.edu/tiny-imagenet-200.zip"
     zip_name = "tiny-imagenet-200.zip"
-    extract_path = "/data"
+    
+    # Use 'data' (relative path) so it stays inside your project folder
+    extract_path = "data" 
 
     # 1. Download
     if not os.path.exists(zip_name):
         print("Downloading dataset (this may take a minute)...")
         urllib.request.urlretrieve(url, zip_name)
     
-    # 2. Unzip
+    # 2. Unzip into the 'data' folder
     if not os.path.exists(extract_path):
-        print("Unzipping...")
+        print(f"Unzipping into {extract_path}...")
         with zipfile.ZipFile(zip_name, 'r') as zip_ref:
             zip_ref.extractall(extract_path)
 
     # 3. Reformat Validation Folder
-    # Using os.path.join makes it work correctly on Windows
+    # The zip contains a folder named 'tiny-imagenet-200'
     val_dir = os.path.join(extract_path, 'tiny-imagenet-200', 'val')
     val_images_dir = os.path.join(val_dir, 'images')
     
@@ -47,8 +49,6 @@ def prepare_data():
         print("Data preparation complete!")
 
 def get_dataloaders(batch_size=32, num_workers=0):
-    # Note: num_workers=0 is recommended for Windows to avoid Multiprocessing errors
-    
     train_transform = T.Compose([
         T.RandomHorizontalFlip(),
         T.RandomRotation(15),
@@ -62,9 +62,14 @@ def get_dataloaders(batch_size=32, num_workers=0):
         T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
     ])
 
-    # Path to data
-    train_root = os.path.join('tiny-imagenet', 'tiny-imagenet-200', 'train')
-    val_root = os.path.join('tiny-imagenet', 'tiny-imagenet-200', 'val')
+    # PATHS UPDATED TO MATCH THE 'data' FOLDER
+    base_path = os.path.join('data', 'tiny-imagenet-200')
+    train_root = os.path.join(base_path, 'train')
+    val_root = os.path.join(base_path, 'val')
+
+    # Verification check to help you debug
+    if not os.path.exists(train_root):
+        raise FileNotFoundError(f"Directory not found: {train_root}. Did you run prepare_data()?")
 
     train_set = ImageFolder(root=train_root, transform=train_transform)
     val_set = ImageFolder(root=val_root, transform=val_transform)
