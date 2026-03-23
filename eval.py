@@ -2,8 +2,8 @@ import torch
 import torch.nn as nn
 
 # Import local modules
-from models import CustomNet
-from dataset import get_dataloaders
+from models.model import CustomNet
+from dataset.dataset import get_dataloaders
 
 def validate(model, val_loader, criterion, device):
     """

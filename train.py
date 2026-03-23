@@ -40,7 +40,7 @@ def train_one_epoch(epoch, model, train_loader, criterion, optimizer, device):
     print(f'Train Results: Loss: {avg_loss:.6f} | Acc: {acc:.2f}%')
     return avg_loss, acc
 
-def validate(model, val_loader, criterion, device):
+def validate(model, val_loader, criterion, device):   
     model.eval()
     val_loss = 0
     correct = 0
